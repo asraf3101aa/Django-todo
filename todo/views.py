@@ -1,47 +1,53 @@
 from django.shortcuts import render,redirect
 from .models import Todo
-from django.views.generic import CreateView,ListView, DeleteView, TemplateView, DetailView, UpdateView
+from django.views import View
 
 # Create your views here.
 
-class IndexView(TemplateView):
-    template_name = 'index.html'
+class IndexView(View):
+    def get(self, request):
+        return render(request, "index.html")
 
-class AddTask(CreateView):
-    model = Todo
-    fields = '__all__'
-    template_name = 'index.html'
-    success_url = '/'
+class AddTask(View):
+    def post(self, request):
+        newtodo = request.POST['task']
+        date = request.POST['date']
+        description = request.POST['description']
+        todo = Todo(task=newtodo, date=date, description=description)
+        todo.save()
+        return redirect('/')
 
-class ListTask(ListView):
-    model = Todo
-    template_name = 'index.html'
-    context_object_name = 'todos'
-    ordering = ['-id']
-    extra_context = {'desc': False}
+class ListTask(View):
+    def get(self, request):
+        todos = Todo.objects.all().order_by('-id')
+        return render(request, "index.html", {'todos': todos, 'desc': False})
 
-class DeleteTodo(DeleteView):
-    model = Todo
-    success_url = ('/todos')
+class DeleteTodo(View):
+    def get(self,request, id):
+        todo = Todo.objects.get(id = id)
+        todo.delete()
+        return redirect('/todos')
+        
+class UpdateTodo(View):
+    def post(self, request, id,is_complete):
+        newtodo = request.POST['task']
+        date = request.POST['date']
+        description = request.POST['description']
+        todo = Todo.objects.get(id = id)
+        todo.task = newtodo
+        todo.date = date
+        todo.description = description
+        todo.save()
+        return redirect('/')
+    def get(self,request,id,is_complete):
+        todo = Todo.objects.get(id = id)
+        print(is_complete)
+        todo.is_complete = bool(is_complete) 
+        todo.save()
+        return redirect('/todos')
 
-    
-    #skip confirm template
-    def get(self, request, *args, **kwargs):
-        return self.delete(request, *args, **kwargs)
-    
-class UpdateTodo(UpdateView):
-    model = Todo
-    fields = ['task','description','date']
-    template_name = 'index.html'
-    success_url = '/'
-    
-
-    
-     
-
-class ShowTodo(DetailView):
-    model = Todo
-    template_name = 'index.html'
-    context_object_name = 'todo'
-    extra_context = {'desc': True}
+class ShowTodo(View):
+    def get(self, request,id):
+        todo = Todo.objects.get(id = id)
+        return render(request, "index.html", {'todo': todo, 'desc': True})
     
