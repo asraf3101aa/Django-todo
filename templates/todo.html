@@ -1,0 +1,49 @@
+<!-- Todo Item -->
+<div class="row px-3 align-items-center todo-item rounded">
+    <div class="col-auto m-1 p-0 d-flex align-items-center">
+        <h2 class="m-0 p-0">
+            {% if todo.is_complete %}
+            <a href="todo/{{todo.id}}/update/False"> <i class="fa fa-check-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as todo"></i></a>
+            {% else %}
+            <a href="todo/{{todo.id}}/update/True"><i class="fa fa-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as complete"></i></a>
+            {% endif %}
+        </h2>
+    </div>
+    <div class="col px-1 m-1 d-flex align-items-center">
+        <input type="text" class="form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3" readonly value="{{todo.task}}" title="Todo" id="todotask"/>
+
+    </div>
+    
+    <div class="col-auto mt-2 p-0 todo-actions">
+        <div class="row d-flex align-items-center justify-content-end">
+            <h5 class="m-0 p-0 px-2">
+                <a href="todo/{{todo.id}}"><i class="fa fa-info-circle text-black btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Description"></i></a>
+            </h5>
+            <h5 class="m-0 p-0 px-2">
+                <i class="fa fa-pencil text-info btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Edit todo" id="edit" onclick="fillform('{{todo.task}}','{{todo.id}}','{{todo.description }}', '{{todo.date}}')"></i>
+            </h5>
+            <h5 class="m-0 p-0 px-2">
+               <a href="todo/{{todo.id}}/delete"><i class="fa fa-trash-o text-danger btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Delete todo"></i></a>
+            </h5>
+        </div>
+        <div class="row todo-created-info">
+            <div class="col-auto d-flex align-items-center pr-2">
+                <label class="date-label my-2 text-black-50" id="tododate">{{todo.date}}</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row align-items-center todo-item rounded">
+{% if desc %}
+    
+    <div class="col ml-3 pl-5 d-flex align-items-center">
+        <textarea type="text" class="form-control form-control-lg border-0 edit-todo-textarea bg-transparent rounded px-3" readonly title="Todo Description" id="tododescription">{{todo.description }}</textarea>
+    </div>
+{% endif%}
+    
+    
+</div>
+<div class="p-2 border-black-25 border-bottom"></div>
