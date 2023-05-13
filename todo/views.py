@@ -2,52 +2,53 @@ from django.shortcuts import render,redirect
 from .models import Todo
 from django.views import View
 
-# Create your views here.
-
-class IndexView(View):
-    def get(self, request):
-        return render(request, "index.html")
-
-class AddTask(View):
-    def post(self, request):
-        newtodo = request.POST['task']
-        date = request.POST['date']
-        description = request.POST['description']
-        todo = Todo(task=newtodo, date=date, description=description)
-        todo.save()
-        return redirect('/')
-
-class ListTask(View):
-    def get(self, request):
-        todos = Todo.objects.all().order_by('-id')
-        return render(request, "index.html", {'todos': todos, 'desc': False})
-
-class DeleteTodo(View):
-    def get(self,request, id):
-        todo = Todo.objects.get(id = id)
-        todo.delete()
-        return redirect('/todos')
+# Create your views here.    
+class TodoFunction(View):
+    def get(self, request, **kwargs):
+        if not kwargs:
+            return render(request, "index.html")
         
-class UpdateTodo(View):
-    def post(self, request, id,is_complete):
-        newtodo = request.POST['task']
-        date = request.POST['date']
-        description = request.POST['description']
-        todo = Todo.objects.get(id = id)
-        todo.task = newtodo
-        todo.date = date
-        todo.description = description
-        todo.save()
-        return redirect('/')
-    def get(self,request,id,is_complete):
-        todo = Todo.objects.get(id = id)
-        print(is_complete)
-        todo.is_complete = bool(is_complete) 
-        todo.save()
-        return redirect('/todos')
+        #Lists all tasks
+        if kwargs.get('base')=='todos':
+            todos = Todo.objects.all().order_by('-id')
+            return render(request, "index.html", {'todos': todos, 'desc': False})   
+         
+        #Lists a todo with description according to id
+        if kwargs.get('id') is not None and kwargs.get('function') is None:
+            todo = Todo.objects.get(id = kwargs.get('id'))
+            return render(request, "index.html", {'todo': todo, 'desc': True})
+        
+        #Update complete status
+        if kwargs.get('function')=='update' and kwargs.get('is_complete') is not None:
+            todo = Todo.objects.get(id = kwargs.get('id'))
+            todo.is_complete = bool(kwargs.get('is_complete')) 
+            todo.save()
+            return redirect('/todos')
+        
+        #Delete a Todo
+        if kwargs.get('function')=='delete':
+            todo = Todo.objects.get(id = kwargs.get('id'))
+            todo.delete()
+            return redirect('/todos')
+    
+    def post(self,request,**kwargs):
+        #Add a Todo
+        if kwargs.get('base')=='todo':
+            newtodo = request.POST['task']
+            date = request.POST['date']
+            description = request.POST['description']
+            todo = Todo(task=newtodo, date=date, description=description)
+            todo.save()
+            return redirect('/')
+        
+        #Update a todo
+        if kwargs.get('function')=='update':
+            todo = Todo.objects.get(id = kwargs.get('id'))
+            todo.task = request.POST['task']
+            todo.date = request.POST['date']
+            todo.description = request.POST['description']
+            todo.save()
+            return redirect('/todos')
 
-class ShowTodo(View):
-    def get(self, request,id):
-        todo = Todo.objects.get(id = id)
-        return render(request, "index.html", {'todo': todo, 'desc': True})
+
     

@@ -1,13 +1,13 @@
 from django.urls import path
-from .views import IndexView,AddTask,DeleteTodo,ListTask,ShowTodo,UpdateTodo
+from .views import TodoFunction
 
 from . import views
 urlpatterns=[
-    path('', IndexView.as_view(), name='index'),
-    path('todo', AddTask.as_view()),
-    path('todos', ListTask.as_view(),name='todos'),
-    path('todo/<int:id>/delete', DeleteTodo.as_view()),
-    path('todo/<int:id>/update', UpdateTodo.as_view()),
-    path('todo/<int:id>/update/<int:is_complete>', UpdateTodo.as_view()),
-    path('todo/<int:id>', ShowTodo.as_view()),
+    path('', TodoFunction.as_view(), name='index'),
+    path('<str:base>', TodoFunction.as_view()),
+    path('<str:base>', TodoFunction.as_view(),name='todos'),
+    path('todo/<int:id>/<str:function>', TodoFunction.as_view()),
+    path('todo/<int:id>/<str:function>', TodoFunction.as_view()),
+    path('todo/<int:id>/<str:function>/<int:is_complete>', TodoFunction.as_view()),
+    path('todo/<int:id>', TodoFunction.as_view()),
 ]
