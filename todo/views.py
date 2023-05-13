@@ -1,9 +1,51 @@
 from django.shortcuts import render,redirect
 from .models import Todo
-from django.views import View
 
 # Create your views here.    
-class TodoFunction(View):
+class TodoFunction():
+    def index(self, request):
+        return render(request, "index.html")
+    
+    def listTodo(self, request):
+        todos = Todo.objects.all().order_by('-id')
+        return render(request, "index.html", {'todos': todos, 'desc': False})   
+
+    def addTodo(self, request):
+        if request.method=='POST':
+            newtodo = request.POST['task']
+            date = request.POST['date']
+            description = request.POST['description']
+            todo = Todo(task=newtodo, date=date, description=description)
+            todo.save()
+            return redirect('/')
+        
+    def deleteTodo(self, request, id):
+        todo = Todo.objects.get(id = id)
+        todo.delete()
+        return redirect('/todos')
+    
+    def updateTodo(self, request, id):
+        if request.method=='POST':
+            todo = Todo.objects.get(id = id)
+            todo.task = request.POST['task']
+            todo.date = request.POST['date']
+            todo.description = request.POST['description']
+            todo.save()
+            return redirect('/todos')
+        
+    def updateStatus(self, request, id, is_complete):
+        todo = Todo.objects.get(id = id)
+        todo.is_complete = bool(is_complete) 
+        todo.save()
+        return redirect('/todos')
+    
+    def getTask(self, request, id):
+        todo = Todo.objects.get(id = id)
+        return render(request, "index.html", {'todo': todo, 'desc': True})
+
+
+    '''
+
     def get(self, request, **kwargs):
         if not kwargs:
             return render(request, "index.html")
@@ -49,6 +91,7 @@ class TodoFunction(View):
             todo.description = request.POST['description']
             todo.save()
             return redirect('/todos')
+        '''
 
 
     
