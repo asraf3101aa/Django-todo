@@ -15,9 +15,17 @@ class TodoFunction():
             newtodo = request.POST['task']
             date = request.POST['date']
             description = request.POST['description']
-            todo = Todo(task=newtodo, date=date, description=description)
-            todo.save()
-            return redirect('/')
+            #validation
+            error_message = None
+            if(not newtodo):
+                error_message = "Task field cannot be empty!!"
+            if not error_message:
+                todo = Todo(task=newtodo, date=date, description=description)
+                todo.save()
+                return redirect('/')
+            else:
+                return render(request,"index.html",{'error':error_message})
+            
         
     def deleteTodo(self, request, id):
         todo = Todo.objects.get(id = id)
@@ -30,7 +38,11 @@ class TodoFunction():
             todo.task = request.POST['task']
             todo.date = request.POST['date']
             todo.description = request.POST['description']
-            todo.save()
+            #validation
+            error_message = None
+            if(not todo.task):
+                error_message = "Task field cannot be empty!!"
+            todo.save() 
             return redirect('/todos')
         
     def updateStatus(self, request, id, is_complete):
