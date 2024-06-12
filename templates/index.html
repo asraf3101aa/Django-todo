@@ -23,11 +23,16 @@
             <form id="todoForm" class="todoForm" method="post">
                 <div class="row m-1 px-3 py-2">
                     <div class="col col-11 mx-auto">
+                        {% if error%}
+                          <div class="alert alert-danger" role="alert">
+                            {{error}}
+                          </div>
+                          {% endif%}
                         <div class="row bg-white rounded shadow-sm p-2 add-todo-wrapper align-items-center justify-content-center">
                             <div class="col">
                                 {% csrf_token %}
 
-                                <input type="text" name="todoid" id="todoid">
+                                <input type="hidden" name="todoid" id="todoid">
                                 <input class="form-control form-control-lg border-0 add-todo-input bg-transparent rounded" type="text" placeholder="Add new .." name="task" id="task">
                             </div>
                             <div class="col-auto m-0 px-2 d-flex align-items-center">
@@ -100,6 +105,11 @@
                     }
                 });
             });
+        </script>
+        <script type="text/javascript">
+            document.getElementById("deleteIcon").onclick = function () {
+                window.location.href = "/todo/{{todo.id}}/delete";
+            };
         </script>
         <script src="{% static 'js/todo.js' %}"></script>
     </body>

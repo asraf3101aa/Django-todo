@@ -3,9 +3,9 @@
     <div class="col-auto m-1 p-0 d-flex align-items-center">
         <h2 class="m-0 p-0">
             {% if todo.is_complete %}
-            <a href="todo/{{todo.id}}/update/False"> <i class="fa fa-check-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as todo"></i></a>
+            <a href="todo/{{todo.id}}/update/0"> <i class="fa fa-check-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as todo"></i></a>
             {% else %}
-            <a href="todo/{{todo.id}}/update/True"><i class="fa fa-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as complete"></i></a>
+            <a href="todo/{{todo.id}}/update/1"><i class="fa fa-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as complete"></i></a>
             {% endif %}
         </h2>
     </div>
@@ -23,8 +23,9 @@
                 <i class="fa fa-pencil text-info btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Edit todo" id="edit" onclick="fillform('{{todo.task}}','{{todo.id}}','{{todo.description }}', '{{todo.date}}')"></i>
             </h5>
             <h5 class="m-0 p-0 px-2">
-               <a href="todo/{{todo.id}}/delete"><i class="fa fa-trash-o text-danger btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Delete todo"></i></a>
+              <i id="deleteIcon" class="fa fa-trash-o text-danger btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Delete todo"></i>
             </h5>
+            
         </div>
         <div class="row todo-created-info">
             <div class="col-auto d-flex align-items-center pr-2">
